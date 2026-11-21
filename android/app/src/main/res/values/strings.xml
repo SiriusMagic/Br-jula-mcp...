@@ -1,0 +1,104 @@
+<resources>
+    <string name="app_name">Brújula</string>
+    <string name="settings">Ajustes</string>
+    <string name="back">Atrás</string>
+    <string name="done">Hecho</string>
+    <string name="cancel">Cancelar</string>
+    <string name="copied">Copiado</string>
+
+    <!-- La brújula -->
+    <string name="no_compass">Este teléfono no tiene brújula (magnetómetro).</string>
+    <string name="letter_n">N</string>
+    <string name="letter_e">E</string>
+    <string name="letter_s">S</string>
+    <string name="letter_w">O</string>
+    <string-array name="directions_16">
+        <item>Norte</item>
+        <item>Nornoreste</item>
+        <item>Noreste</item>
+        <item>Estenoreste</item>
+        <item>Este</item>
+        <item>Estesureste</item>
+        <item>Sureste</item>
+        <item>Sursureste</item>
+        <item>Sur</item>
+        <item>Sursuroeste</item>
+        <item>Suroeste</item>
+        <item>Oestesuroeste</item>
+        <item>Oeste</item>
+        <item>Oestenoroeste</item>
+        <item>Noroeste</item>
+        <item>Nornoroeste</item>
+    </string-array>
+    <string name="location_why">¿Quieres ver tu latitud y longitud? La ubicación no sale del teléfono.</string>
+    <string name="location_allow">Mostrar mi ubicación</string>
+    <string name="location_searching">Buscando ubicación…</string>
+    <string name="latitude_north">Latitud norte</string>
+    <string name="latitude_south">Latitud sur</string>
+    <string name="longitude_east">Longitud este</string>
+    <string name="longitude_west">Longitud oeste</string>
+
+    <!-- Calibrar -->
+    <string name="calibrate_title">Calibrar la Brújula</string>
+    <string name="calibrate_text">Manténgase alejado de interferencias magnéticas y no cargue. Siga las acciones anteriores para recalibrar.</string>
+    <string name="calibrate">Calibrar</string>
+    <string name="calibrate_hint">Mueve el teléfono en forma de 8 si la brújula se desvía.</string>
+
+    <!-- Ajustes -->
+    <string name="theme">Temas</string>
+    <string name="theme_system">Sistema</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
+    <string name="amoled">Negro puro (AMOLED)</string>
+    <string name="amoled_hint">Fondo totalmente negro en el tema oscuro: ahorra batería.</string>
+    <string name="accent">Color de acento</string>
+    <string name="accent_red">Rojo</string>
+    <string name="accent_orange">Naranja</string>
+    <string name="accent_yellow">Amarillo</string>
+    <string name="accent_green">Verde</string>
+    <string name="accent_blue">Azul</string>
+    <string name="accent_purple">Morado</string>
+    <string name="points">Rumbos</string>
+    <string name="points_hint">Nombres con 8 puntos (Noroeste) o con 16 (Nornoroeste).</string>
+    <string name="privacy">Política de privacidad</string>
+    <string name="privacy_text">La brújula y tu ubicación se leen solo en este teléfono; la ubicación solo si la permites. Brújula no tiene anuncios ni estadísticas ni copias en la nube. Solo si activas el Modo MCP, la IA que conectes con un token puede leer el rumbo y la ubicación a través del relay; nunca puede cambiar nada.</string>
+    <string name="about">Acerca de</string>
+    <string name="version">Versión %1$s</string>
+
+    <!-- Modo MCP (igual que Stone, Luma, Calculadora y Notas) -->
+    <string name="mcp_title">Modo MCP</string>
+    <string name="mcp_settings_hint">Conecta tu IA (Claude, ChatGPT…) o Gateway Hub a tu brújula.</string>
+    <string name="mcp_status_off">Apagado</string>
+    <string name="mcp_enable">Activar MCP</string>
+    <string name="mcp_enable_hint">Funciona mientras Brújula esté abierta o en segundo plano.</string>
+    <string name="mcp_enable_by_hub">Lo gestiona Gateway Hub mientras «Redireccionar a Hub» esté activado.</string>
+    <string name="mcp_online">Conectado a internet</string>
+    <string name="mcp_connecting">Conectando…</string>
+    <string name="mcp_offline">Sin conexión</string>
+    <string name="mcp_redirect">Redireccionar a Hub</string>
+    <string name="mcp_redirect_hint">Gateway Hub administra los permisos, la caducidad y el soporte. No hace falta activar MCP.</string>
+    <string name="mcp_go_to_hub">Ir al Hub</string>
+    <string name="mcp_paste_in_hub">Enlace copiado. Pégalo en Gateway Hub › Apps.</string>
+    <string name="mcp_tokens">Tokens</string>
+    <string name="mcp_create">Crear token</string>
+    <string name="mcp_create_copy">Crear y copiar enlace</string>
+    <string name="mcp_what">¿Qué vas a conectar?</string>
+    <string name="mcp_kind_llm">LLM</string>
+    <string name="mcp_kind_hub">Hub</string>
+    <string name="mcp_name">Nombre (ej. Claude)</string>
+    <string name="mcp_usage">Uso del token (se muestra en el hub)</string>
+    <string name="mcp_read">Solo lectura</string>
+    <string name="mcp_read_only">Solo lectura: la IA ve el rumbo y la ubicación, nunca cambia nada.</string>
+    <string name="mcp_forever">Siempre</string>
+    <string name="mcp_days">%1$d d</string>
+    <string name="mcp_paused">Pausado</string>
+    <string name="mcp_expired">Caducado</string>
+    <string name="mcp_active">Activo</string>
+    <string name="mcp_copy">Copiar enlace</string>
+    <string name="mcp_pause">Pausar</string>
+    <string name="mcp_resume">Reanudar</string>
+    <string name="mcp_revoke">Revocar</string>
+    <string name="mcp_revoke_title">¿Revocar %1$s?</string>
+    <string name="mcp_revoke_text">La IA pierde el acceso al instante y su enlace deja de funcionar.</string>
+    <string name="hub_link_permission">Vincular con Gateway Hub</string>
+</resources>

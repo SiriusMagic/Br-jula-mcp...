@@ -1,0 +1,44 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Internet is only for Modo MCP (off by default), through the relay. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- Latitude and longitude under the dial, only if the user allows it (asked politely, optional). No Google services. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- «Redireccionar a Hub»: only apps signed with the same key (Gateway Hub) get this permission. -->
+    <permission android:name="com.zirakusa.gatewayhub.permission.LINK" android:protectionLevel="signature"
+        android:label="@string/hub_link_permission" />
+    <!-- Installs everywhere: without a compass or GPS the screen says so. -->
+    <uses-feature android:name="android.hardware.sensor.compass" android:required="false" />
+    <uses-feature android:name="android.hardware.sensor.accelerometer" android:required="false" />
+    <uses-feature android:name="android.hardware.location" android:required="false" />
+    <uses-feature android:name="android.hardware.location.gps" android:required="false" />
+    <uses-feature android:name="android.hardware.location.network" android:required="false" />
+    <!-- «Ir al Hub» opens the Gateway Hub app. -->
+    <queries><package android:name="com.zirakusa.gatewayhub" /></queries>
+
+    <application
+        android:name=".BrujulaApplication"
+        android:allowBackup="false"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:label="@string/app_name"
+        android:icon="@mipmap/ic_launcher"
+        android:supportsRtl="true"
+        android:theme="@android:style/Theme.Material.NoActionBar">
+        <activity android:name=".MainActivity" android:exported="true" android:launchMode="singleTask">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            <!-- Gateway Hub's scanner finds the compass (module compass_) and its link channel. Being found turns nothing on. -->
+            <intent-filter>
+                <action android:name="com.zirakusa.gatewayhub.action.APP" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <meta-data android:name="com.zirakusa.gatewayhub.module" android:value="compass_" />
+            <meta-data android:name="com.zirakusa.gatewayhub.link" android:value="${applicationId}.hublink" />
+        </activity>
+        <provider android:name=".mcp.HubLinkProvider" android:authorities="${applicationId}.hublink"
+            android:exported="true" android:permission="com.zirakusa.gatewayhub.permission.LINK" />
+    </application>
+</manifest>
