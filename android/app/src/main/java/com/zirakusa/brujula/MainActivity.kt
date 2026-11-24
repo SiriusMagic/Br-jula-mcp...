@@ -36,6 +36,7 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        AppIcon.load(this)
         enableEdgeToEdge()
         state = CompassState(getSharedPreferences("ajustes", Context.MODE_PRIVATE))
         state.hasCompass = compass.available

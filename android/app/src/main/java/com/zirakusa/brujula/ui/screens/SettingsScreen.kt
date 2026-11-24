@@ -1,5 +1,7 @@
 package com.zirakusa.brujula.ui.screens
 
+import com.zirakusa.brujula.IconCard
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -88,6 +90,7 @@ import com.zirakusa.brujula.ui.theme.ThemeMode
             HorizontalDivider(color = CompassColors.Chip)
             Item(stringResource(R.string.calibrate), stringResource(R.string.calibrate_hint), onCalibrate)
         }
+        IconCard(CompassColors.Card, CompassColors.Text, CompassColors.Muted, CompassColors.Accent, androidx.compose.ui.graphics.Color(0xFF000000))
         Group {
             Item(stringResource(R.string.privacy), null) { privacy = true }
             HorizontalDivider(color = CompassColors.Chip)
