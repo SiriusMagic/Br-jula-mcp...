@@ -119,6 +119,7 @@ class McpTest {
 
     /** Lucía runs a tool on the phone through the same handler, only while «Redireccionar a Hub» is on. */
     @Test fun luciaRunsToolsOnThePhone() {
+        val relay = com.zirakusa.brujula.mcp.McpMode.relayUrl
         com.zirakusa.brujula.mcp.McpMode.relayUrl = ""                                             // no relay in tests
         com.zirakusa.brujula.mcp.McpMode.load(org.robolectric.RuntimeEnvironment.getApplication())
         com.zirakusa.brujula.mcp.McpMode.redirect(false)
@@ -129,5 +130,6 @@ class McpTest {
         val viaProvider = JSONObject(HubLink.tool(true, """{"jsonrpc":"2.0","id":2,"method":"tools/list"}""").getString("response"))
         assertEquals(2, viaProvider.getInt("id"))
         com.zirakusa.brujula.mcp.McpMode.redirect(false)
+        com.zirakusa.brujula.mcp.McpMode.relayUrl = relay                                          // as the other tests expect
     }
 }
