@@ -44,8 +44,6 @@ class CompassStateTest {
         s.openCalibration(Page.SETTINGS)
         assertEquals(Page.CALIBRATION, s.page)
         assertTrue(s.back()); assertEquals(Page.SETTINGS, s.page)
-        s.page = Page.MCP
-        assertTrue(s.back()); assertEquals(Page.SETTINGS, s.page)
         assertTrue(s.back()); assertEquals(Page.COMPASS, s.page)
         assertFalse(s.back())
     }

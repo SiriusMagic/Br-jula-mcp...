@@ -6,7 +6,6 @@ import com.zirakusa.brujula.data.Heading
 import com.zirakusa.brujula.mcp.Access
 import com.zirakusa.brujula.mcp.CompassData
 import com.zirakusa.brujula.mcp.HubLink
-import com.zirakusa.brujula.mcp.Kind
 import com.zirakusa.brujula.mcp.McpHandler
 import com.zirakusa.brujula.mcp.Place
 import com.zirakusa.brujula.mcp.Token
@@ -34,10 +33,8 @@ class McpTest {
     }
 
     private val data = Fake()
-    private val reader = Token("r", "Claude", "bru_" + "r".repeat(40), Access.READ, Kind.HUB, "Rumbo")
-    private val paused = Token("p", "Viejo", "bru_" + "p".repeat(40), Access.READ, paused = true)
-    private val expired = Token("e", "Caducado", "bru_" + "e".repeat(40), Access.READ, expiresAt = 1)
-    private val handler = McpHandler({ listOf(reader, paused, expired) }, data, "0.1.0")
+    private val reader = Token("bru_" + "r".repeat(40), Access.READ)
+    private val handler = McpHandler({ listOf(reader) }, data, "0.1.0")
 
     private fun rpc(token: Token, method: String, params: JSONObject = JSONObject()) = runBlocking {
         JSONObject(handler.handle("POST", "/mcp", mapOf("Authorization" to "Bearer ${token.secret}"), emptyMap(),
@@ -58,7 +55,7 @@ class McpTest {
         assertEquals("brujula", init.getJSONObject("serverInfo").getString("name"))
         assertEquals("0.1.0", init.getJSONObject("serverInfo").getString("version"))
         val meta = init.getJSONObject("_meta").getJSONObject(McpHandler.TOKEN_META)
-        assertEquals("hub", meta.getString("kind")); assertEquals("read", meta.getString("mode"))
+        assertEquals("redirect", meta.getString("kind")); assertEquals("read", meta.getString("mode"))
     }
 
     @Test fun headingAndLocation() {
@@ -104,32 +101,42 @@ class McpTest {
         val body = """{"jsonrpc":"2.0","id":1,"method":"tools/list"}"""
         assertEquals(200, handler.handle("POST", "/mcp", mapOf("X-Api-Key" to reader.secret), emptyMap(), body).status)
         assertEquals(200, handler.handle("POST", "/mcp", emptyMap(), mapOf("token" to reader.secret), body).status)
-        assertEquals(401, handler.handle("POST", "/mcp", mapOf("Authorization" to "Bearer ${paused.secret}"), emptyMap(), body).status)
-        assertEquals(401, handler.handle("POST", "/mcp", mapOf("Authorization" to "Bearer ${expired.secret}"), emptyMap(), body).status)
+        assertEquals(401, handler.handle("POST", "/mcp", mapOf("Authorization" to "Bearer wrong_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"), emptyMap(), body).status)
+        assertEquals(401, handler.handle("POST", "/mcp", mapOf("Authorization" to "Bearer wrong_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"), emptyMap(), body).status)
         assertEquals(401, handler.handle("POST", "/mcp", mapOf("Authorization" to "Bearer bru_wrong"), emptyMap(), body).status)
         assertEquals(401, handler.handle("POST", "/mcp", emptyMap(), emptyMap(), body).status)
         assertEquals("NOT_SAME_DEVELOPER", HubLink.answer(false).getString("error"))
         assertEquals("REDIRECT_OFF", HubLink.answer(true).getString("error"))
-        // «Conectar todas» and Lucía's tools: only for the same developer, and tools only with «Redireccionar a Hub» on.
         assertEquals("NOT_SAME_DEVELOPER", HubLink.connect(false).getString("error"))
         assertEquals("NOT_SAME_DEVELOPER", HubLink.tool(false, "{}").getString("error"))
-        assertEquals("REDIRECT_OFF", HubLink.tool(true, "{}").getString("error"))
+        // Only the same developer (Arka) may connect, disconnect, read the status or run a tool.
+        listOf(HubLink.disconnect(false), HubLink.status(false)).forEach { assertEquals("NOT_SAME_DEVELOPER", it.getString("error")) }
         assertTrue(Token.secret().startsWith("bru_"))
     }
 
-    /** Lucía runs a tool on the phone through the same handler, only while «Redireccionar a Hub» is on. */
+    /** Lucía runs a tool on the phone through the same handler, with or without the public link; Arka turns that on and off. */
     @Test fun luciaRunsToolsOnThePhone() {
         val relay = com.zirakusa.brujula.mcp.McpMode.relayUrl
         com.zirakusa.brujula.mcp.McpMode.relayUrl = ""                                             // no relay in tests
         com.zirakusa.brujula.mcp.McpMode.load(org.robolectric.RuntimeEnvironment.getApplication())
-        com.zirakusa.brujula.mcp.McpMode.redirect(false)
-        assertEquals(null, com.zirakusa.brujula.mcp.McpMode.local("{}"))
-        HubLink.connect(true); assertTrue(com.zirakusa.brujula.mcp.McpMode.hubRedirect)                // «Conectar todas»
+        com.zirakusa.brujula.mcp.McpMode.turnRemote(false)
         val list = JSONObject(com.zirakusa.brujula.mcp.McpMode.local("""{"jsonrpc":"2.0","id":1,"method":"tools/list"}""")!!)
         assertTrue(list.getJSONObject("result").getJSONArray("tools").length() > 0)
         val viaProvider = JSONObject(HubLink.tool(true, """{"jsonrpc":"2.0","id":2,"method":"tools/list"}""").getString("response"))
         assertEquals(2, viaProvider.getInt("id"))
-        com.zirakusa.brujula.mcp.McpMode.redirect(false)
+        assertEquals("BAD_REQUEST", HubLink.tool(true, "").getString("error"))
+        assertEquals("NOT_SAME_DEVELOPER", HubLink.tool(false, "{}").getString("error"))
+        assertTrue(HubLink.status(true).containsKey("remote"))
+        HubLink.connect(true); assertTrue(com.zirakusa.brujula.mcp.McpMode.remote)                 // Arka › «Activar MCP»
+        assertFalse(HubLink.disconnect(true).getBoolean("remote")); assertFalse(com.zirakusa.brujula.mcp.McpMode.remote)
         com.zirakusa.brujula.mcp.McpMode.relayUrl = relay                                          // as the other tests expect
+    }
+
+    /** The hub's token from before Arka took over is kept, so the hub's link keeps working. */
+    @Test fun theOldHubTokenIsKept() {
+        val old = """[{"id":"a","secret":"${"l".repeat(44)}","kind":"llm"},{"id":"b","secret":"${"h".repeat(44)}","kind":"redirect"}]"""
+        assertEquals("h".repeat(44), com.zirakusa.brujula.mcp.Legacy.redirectSecret(old))
+        assertEquals(null, com.zirakusa.brujula.mcp.Legacy.redirectSecret("[]"))
+        assertEquals(null, com.zirakusa.brujula.mcp.Legacy.redirectSecret(""))
     }
 }

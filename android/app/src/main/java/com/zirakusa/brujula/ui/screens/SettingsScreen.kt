@@ -1,7 +1,6 @@
 package com.zirakusa.brujula.ui.screens
 
 import com.zirakusa.brujula.IconCard
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -80,8 +79,7 @@ import com.zirakusa.brujula.ui.theme.ThemeMode
         }
         Group {
             val status = when {
-                !McpMode.active -> stringResource(R.string.mcp_status_off)
-                McpMode.hubRedirect -> stringResource(R.string.mcp_redirect)
+                !McpMode.remote -> stringResource(R.string.mcp_status_off)
                 McpMode.state == RelayLink.State.ONLINE -> stringResource(R.string.mcp_online)
                 McpMode.state == RelayLink.State.CONNECTING -> stringResource(R.string.mcp_connecting)
                 else -> stringResource(R.string.mcp_offline)

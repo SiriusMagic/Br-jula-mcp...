@@ -57,13 +57,7 @@ class ScreenshotsTest {
         onView(isRoot()).captureRoboImage("build/screenshots/brujula-settings.png")
         compose.onNodeWithText("16").performClick()
         assertEquals(16, state.points)
-        compose.onNodeWithText("Modo MCP").performClick()
-        compose.onNodeWithText("Redireccionar a Hub").assertExists()
-        onView(isRoot()).captureRoboImage("build/screenshots/brujula-mcp.png")
-        compose.onNodeWithText("Crear token").performClick()
-        compose.onNodeWithText("Crear y copiar enlace").assertExists()
-        onView(isRoot()).captureRoboImage("build/screenshots/brujula-mcp-token.png")
-        compose.onNodeWithText("Cancelar").performClick()
+        compose.onNodeWithText("Lo controla Arka", substring = true).assertExists()
         state.page = Page.COMPASS
         compose.onNodeWithText("Oestenoroeste").assertExists()
     }

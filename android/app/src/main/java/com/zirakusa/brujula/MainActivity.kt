@@ -54,7 +54,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 BackHandler(state.page != Page.COMPASS) { state.back() }
-                BrujulaApp(state, AppActions(askLocation = ::askLocation, copy = ::copy, goToHub = ::goToHub, copyText = ::copyCoordinates))
+                BrujulaApp(state, AppActions(askLocation = ::askLocation, openArka = ::openArka, copyText = ::copyCoordinates))
             }
         }
     }
@@ -89,20 +89,14 @@ class MainActivity : ComponentActivity() {
         if (Build.VERSION.SDK_INT >= 30) display?.rotation ?: Surface.ROTATION_0
         else @Suppress("DEPRECATION") windowManager.defaultDisplay.rotation
 
-    private fun copy(link: String) {
-        getSystemService(ClipboardManager::class.java)?.setPrimaryClip(ClipData.newPlainText("Brújula MCP", link))
-        Toast.makeText(this, R.string.copied, Toast.LENGTH_SHORT).show()
-    }
-
     private fun copyCoordinates(text: String) {
         getSystemService(ClipboardManager::class.java)?.setPrimaryClip(ClipData.newPlainText("Brújula", text))
         Toast.makeText(this, R.string.copied, Toast.LENGTH_SHORT).show()
     }
 
-    /** «Ir al Hub»: copies the hub's link (in case it must be pasted) and opens the Gateway Hub app. */
-    private fun goToHub() {
-        getSystemService(ClipboardManager::class.java)?.setPrimaryClip(ClipData.newPlainText("Brújula › Gateway Hub", McpMode.hubLink()))
+    /** «Modo MCP» in Ajustes: it is turned on, allowed on the phone and given tokens in Arka, so this opens Arka. */
+    private fun openArka() {
         val open = packageManager.getLaunchIntentForPackage("com.zirakusa.gatewayhub")
-        if (open != null) startActivity(open) else Toast.makeText(this, R.string.mcp_paste_in_hub, Toast.LENGTH_LONG).show()
+        if (open != null) startActivity(open) else Toast.makeText(this, R.string.mcp_no_arka, Toast.LENGTH_LONG).show()
     }
 }

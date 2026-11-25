@@ -20,7 +20,7 @@ import com.zirakusa.brujula.data.Heading
 import com.zirakusa.brujula.ui.theme.Accent
 import com.zirakusa.brujula.ui.theme.ThemeMode
 
-enum class Page { COMPASS, LOCATION, CALIBRATION, SETTINGS, MCP }
+enum class Page { COMPASS, LOCATION, CALIBRATION, SETTINGS }
 
 /** What the phone's magnetic model (no internet) says for a place: declination (east positive) and the field (µT). */
 data class Magnetic(val declination: Float, val expectedMicrotesla: Float)
@@ -143,7 +143,6 @@ class CompassState(
             Page.COMPASS -> return false
             Page.CALIBRATION -> calibrationBack
             Page.LOCATION -> Page.COMPASS
-            Page.MCP -> Page.SETTINGS
             Page.SETTINGS -> Page.COMPASS
         }
         return true
