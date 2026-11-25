@@ -30,6 +30,8 @@ class CompassSensor(context: Context) : SensorEventListener {
     var displayRotation: () -> Int = { Surface.ROTATION_0 }
     var onHeading: (Heading) -> Unit = {}
     var onAccuracy: (Accuracy) -> Unit = {}
+    /** The raw magnetic field (µT, phone axes), for «Calibrar». */
+    var onField: (Float, Float, Float) -> Unit = { _, _, _ -> }
 
     @Volatile var latest: Heading? = null; private set
     @Volatile var latestAt = 0L; private set
@@ -73,7 +75,7 @@ class CompassSensor(context: Context) : SensorEventListener {
             Sensor.TYPE_ROTATION_VECTOR -> SensorManager.getRotationMatrixFromVector(matrix, event.values)
             Sensor.TYPE_ACCELEROMETER -> { lowPass(event.values, gravity, haveGravity); haveGravity = true; if (!fused()) return }
             // With a rotation vector the magnetometer is only heard for its accuracy.
-            Sensor.TYPE_MAGNETIC_FIELD -> { noteAccuracy(event.accuracy); lowPass(event.values, field, haveField); haveField = true; if (rotationVector != null || !fused()) return }
+            Sensor.TYPE_MAGNETIC_FIELD -> { noteAccuracy(event.accuracy); onField(event.values[0], event.values[1], event.values[2]); lowPass(event.values, field, haveField); haveField = true; if (rotationVector != null || !fused()) return }
             else -> return
         }
         publish()

@@ -22,7 +22,13 @@ data class Heading(val degrees: Float, val accuracy: Accuracy, val declination: 
 }
 
 /** One position from the phone (no Google services). [accuracyM] is the radius in metres; [time] in milliseconds. */
-data class Fix(val latitude: Double, val longitude: Double, val accuracyM: Float? = null, val time: Long = 0)
+data class Fix(val latitude: Double, val longitude: Double, val accuracyM: Float? = null, val time: Long = 0,
+    /** Metres above sea level (GPS), when known. */
+    val altitude: Double? = null,
+    /** «gps» works without internet; «network» needs Wi‑Fi or mobile data. */
+    val provider: String? = null) {
+    val at get() = LatLon(latitude, longitude)
+}
 
 /** Angle arithmetic on the circle: wrap, shortest difference and smoothing that never spins the long way round. */
 object Angles {

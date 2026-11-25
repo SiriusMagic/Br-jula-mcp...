@@ -12,8 +12,8 @@ android {
         applicationId = "com.zirakusa.brujula"
         minSdk = 26
         targetSdk = 36
-        versionCode = 2
-        versionName = "0.1.1"
+        versionCode = 3
+        versionName = "0.2.0"
         // Modo MCP: the same public relay as Stone, Luma, Calculadora and Notas (one device id per app). Empty = no MCP.
         val relayUrl = (project.findProperty("brujulaRelayUrl") as String?).orEmpty().trimEnd('/')
         buildConfigField("String", "RELAY_URL", "\"$relayUrl\"")

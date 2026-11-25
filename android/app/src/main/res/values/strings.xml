@@ -40,7 +40,7 @@
 
     <!-- Calibrar -->
     <string name="calibrate_title">Calibrar la Brújula</string>
-    <string name="calibrate_text">Manténgase alejado de interferencias magnéticas y no cargue. Siga las acciones anteriores para recalibrar.</string>
+    <string name="calibrate_text">Dibuja un 8 en el aire con el teléfono, girando también la muñeca, hasta llenar la barra. Aléjate de imanes, metal y del cargador.</string>
     <string name="calibrate">Calibrar</string>
     <string name="calibrate_hint">Mueve el teléfono en forma de 8 si la brújula se desvía.</string>
 
@@ -102,10 +102,68 @@
     <string name="mcp_revoke_text">La IA pierde el acceso al instante y su enlace deja de funcionar.</string>
     <string name="hub_link_permission">Vincular con Gateway Hub</string>
     <string name="icon_title">Icono de la app</string>
-    <string name="icon_original">Original</string>
-    <string name="icon_light">Claro</string>
-    <string name="icon_gold">Dorado</string>
-    <string name="icon_blue">Azul</string>
-    <string name="icon_green">Verde</string>
+    <string name="icon_oil">Óleo</string>
+    <string name="icon_metal">Metal</string>
+    <string name="icon_classic">Clásica</string>
+    <string name="icon_neon">Neón</string>
+    <string name="icon_pixel">Píxel</string>
     <string name="icon_hint">Cambia el icono de la pantalla de inicio. Algunos lanzadores tardan unos segundos en mostrarlo.</string>
+    <!-- Location without internet, true north, places, calibration -->
+    <string name="location_title">Ubicación sin internet</string>
+    <string name="location_offline_hint">El GPS no necesita internet ni datos: solo ver el cielo. Sal al aire libre si tarda; la primera vez puede tardar unos minutos.</string>
+    <string name="location_searching_gps">Buscando satélites…</string>
+    <string name="north_short">N</string>
+    <string name="south_short">S</string>
+    <string name="east_short">E</string>
+    <string name="west_short">O</string>
+    <string name="fix_source">Origen</string>
+    <string name="fix_altitude">Altitud</string>
+    <string name="fix_satellites">Satélites</string>
+    <string name="satellites_of">%1$d en uso de %2$d</string>
+    <string name="fix_age">Actualizada</string>
+    <string name="copy">Copiar</string>
+    <string name="place_save_here">Guardar este lugar</string>
+    <string name="north_true">Norte verdadero</string>
+    <string name="north_true_hint">El de los mapas. Se calcula en el teléfono con tu posición (sin internet).</string>
+    <string name="declination">Declinación magnética</string>
+    <string name="sun_at">El sol está a %1$d° (%2$s), a %3$d° sobre el horizonte. De día te sirve para comprobar el norte sin el sensor.</string>
+    <string name="sun_down">El sol no está sobre el horizonte ahora.</string>
+    <string name="ago_seconds">hace %1$d s</string>
+    <string name="ago_minutes">hace %1$d min</string>
+    <string name="ago_hours">hace %1$d h</string>
+    <string name="places">Mis lugares</string>
+    <string name="place_type">Escribir coordenadas</string>
+    <string name="places_empty">Guarda dónde estás (tu coche, tu casa, el campamento) y la brújula te lleva de vuelta, sin internet.</string>
+    <string name="place_from_here">%1$s · %2$d°</string>
+    <string name="place_stop">Parar</string>
+    <string name="place_go">Ir</string>
+    <string name="place_remove">Quitar</string>
+    <string name="save">Guardar</string>
+    <string name="place_name">Nombre</string>
+    <string name="place_default">Lugar %1$d</string>
+    <string name="place_coordinates">Coordenadas</string>
+    <string name="place_coordinates_bad">No son coordenadas válidas.</string>
+    <string name="place_coordinates_hint">Decimales o grados: 0°13′47″S 78°31′29″O</string>
+    <string name="north_true_line">Norte verdadero · declinación %1$s</string>
+    <string name="north_true_waiting">Norte magnético hasta tener tu posición</string>
+    <string name="north_magnetic_line">Norte magnético</string>
+    <string name="go_line">Ir a %1$s · %2$s · %3$d°</string>
+    <string name="go_line_waiting">Ir a %1$s · esperando tu posición</string>
+    <string name="source_gps">GPS (sin internet)</string>
+    <string name="source_network">Red</string>
+    <plurals name="satellites_short">
+        <item quantity="one">%1$d satélite</item>
+        <item quantity="other">%1$d satélites</item>
+    </plurals>
+    <string name="calibrate_ok">¡Listo! La brújula es fiable</string>
+    <string name="calibrate_progress">Movimiento: %1$d %%</string>
+    <string name="calibrate_sensor">Precisión del sensor</string>
+    <string name="accuracy_high">Alta</string>
+    <string name="accuracy_medium">Media</string>
+    <string name="accuracy_low">Baja</string>
+    <string name="accuracy_unreliable">No fiable</string>
+    <string name="calibrate_field">Campo magnético</string>
+    <string name="microtesla">%1$d µT</string>
+    <string name="field_strong">Campo demasiado fuerte: aleja el teléfono de imanes, altavoces, fundas con imán, metal o el cargador.</string>
+    <string name="field_weak">Campo demasiado débil: el sensor puede estar mal. Prueba al aire libre.</string>
 </resources>

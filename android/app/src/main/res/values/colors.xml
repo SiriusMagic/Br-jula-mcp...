@@ -1,8 +1,8 @@
 <resources>
-    <color name="launcher_background">#000000</color>
-    <!-- The other launcher icons (Ajustes › Icono de la app). -->
-    <color name="launcher_background_light">#F2F2F2</color>
-    <color name="launcher_background_gold">#F5C518</color>
-    <color name="launcher_background_blue">#1565C0</color>
-    <color name="launcher_background_green">#1B5E20</color>
+    <!-- Launcher icon backgrounds (Ajustes › Icono de la app), the colour at each picture's edge. Óleo is the default. -->
+    <color name="launcher_background_oil">#0D2C5A</color>
+    <color name="launcher_background_metal">#001658</color>
+    <color name="launcher_background_classic">#00018E</color>
+    <color name="launcher_background_neon">#125083</color>
+    <color name="launcher_background_pixel">#011657</color>
 </resources>

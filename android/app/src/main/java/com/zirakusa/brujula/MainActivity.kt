@@ -38,7 +38,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         AppIcon.load(this)
         enableEdgeToEdge()
-        state = CompassState(getSharedPreferences("ajustes", Context.MODE_PRIVATE))
+        state = CompassState(getSharedPreferences("ajustes", Context.MODE_PRIVATE), model = { fix ->
+            // Android's own World Magnetic Model: declination and expected field for this place, without internet.
+            val g = android.hardware.GeomagneticField(fix.latitude.toFloat(), fix.longitude.toFloat(), (fix.altitude ?: 0.0).toFloat(), System.currentTimeMillis())
+            com.zirakusa.brujula.ui.Magnetic(g.declination, g.fieldStrength / 1000f)
+        })
         state.hasCompass = compass.available
         McpMode.load(this)
         setContent {
@@ -50,7 +54,7 @@ class MainActivity : ComponentActivity() {
                     }
                 }
                 BackHandler(state.page != Page.COMPASS) { state.back() }
-                BrujulaApp(state, AppActions(askLocation = ::askLocation, copy = ::copy, goToHub = ::goToHub))
+                BrujulaApp(state, AppActions(askLocation = ::askLocation, copy = ::copy, goToHub = ::goToHub, copyText = ::copyCoordinates))
             }
         }
     }
@@ -62,16 +66,18 @@ class MainActivity : ComponentActivity() {
         compass.displayRotation = ::rotation
         compass.onHeading = state::onHeading
         compass.onAccuracy = { runOnUiThread { state.onAccuracy(it) } }
+        compass.onField = state::onField
         compass.start(this)
         state.locationAllowed = location.allowed()
         location.onFix = state::onFix
+        location.onSatellites = state::onSatellites
         location.latest?.let(state::onFix)
         location.start(this)
     }
 
     override fun onStop() {
         compass.stop(this); location.stop(this)
-        compass.onHeading = {}; compass.onAccuracy = {}; location.onFix = {}
+        compass.onHeading = {}; compass.onAccuracy = {}; compass.onField = { _, _, _ -> }; location.onFix = {}; location.onSatellites = { _, _ -> }
         super.onStop()
     }
 
@@ -85,6 +91,11 @@ class MainActivity : ComponentActivity() {
 
     private fun copy(link: String) {
         getSystemService(ClipboardManager::class.java)?.setPrimaryClip(ClipData.newPlainText("Brújula MCP", link))
+        Toast.makeText(this, R.string.copied, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun copyCoordinates(text: String) {
+        getSystemService(ClipboardManager::class.java)?.setPrimaryClip(ClipData.newPlainText("Brújula", text))
         Toast.makeText(this, R.string.copied, Toast.LENGTH_SHORT).show()
     }
 

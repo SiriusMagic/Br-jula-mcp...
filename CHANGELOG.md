@@ -1,3 +1,18 @@
+# Brújula 0.2.0
+
+- **Ubicación sin internet**: toca las coordenadas. El GPS no necesita datos ni Wi‑Fi: se ve la posición en decimales y en
+  grados, la precisión, la altitud, cuántos satélites se usan y hace cuánto se actualizó. «Copiar» y «Guardar este lugar».
+- **Norte verdadero siempre** (de fábrica): con tu posición, el teléfono calcula la declinación magnética con su propio
+  modelo (sin internet) y la brújula marca el norte de los mapas. Se puede volver al magnético.
+- **El sol en la esfera**: un punto amarillo muestra dónde está el sol ahora, calculado con la hora y tu posición. Sirve
+  para comprobar el norte aunque el sensor falle.
+- **Mis lugares e «Ir»**: guarda dónde estás o escribe coordenadas (decimales o grados, minutos y segundos); con «Ir» una
+  flecha verde en la esfera y «Ir a Coche · 741 m · 320°» te llevan de vuelta.
+- **Calibración mejor**: una barra de progreso que se llena mientras dibujas el 8, la precisión del sensor y la fuerza del
+  campo magnético (µT), con aviso si hay un imán, metal o el cargador cerca. Ya no se cierra sola con un imán cerca.
+- **Iconos nuevos**: Óleo (el de fábrica), Metal, Clásica, Neón y Píxel. Se quitan los anteriores; si tenías uno elegido,
+  pasa solo al nuevo que ocupa su lugar.
+
 # Brújula 0.1.1
 
 - **Conectar todas** (Gateway Hub 0.0.21): con un toque en el Hub se activa aquí «Redireccionar a Hub» y la app queda

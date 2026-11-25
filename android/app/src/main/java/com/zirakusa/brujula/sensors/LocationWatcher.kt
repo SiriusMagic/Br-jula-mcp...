@@ -19,6 +19,14 @@ class LocationWatcher(context: Context) : LocationListener {
     private val manager = app.getSystemService(LocationManager::class.java)
     private val users = mutableSetOf<Any>()
     var onFix: (Fix) -> Unit = {}
+    /** Satellites (used in the position, seen) while the GPS is on; it needs no internet. */
+    var onSatellites: (Int, Int) -> Unit = { _, _ -> }
+    private val gnss = object : android.location.GnssStatus.Callback() {
+        override fun onSatelliteStatusChanged(status: android.location.GnssStatus) {
+            val used = (0 until status.satelliteCount).count { status.usedInFix(it) }
+            onSatellites(used, status.satelliteCount)
+        }
+    }
     @Volatile var latest: Fix? = null; private set
 
     fun allowed() = granted(Manifest.permission.ACCESS_FINE_LOCATION) || granted(Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -29,7 +37,7 @@ class LocationWatcher(context: Context) : LocationListener {
     }
 
     fun stop(user: Any) = synchronized(users) {
-        if (users.remove(user) && users.isEmpty()) manager?.removeUpdates(this)
+        if (users.remove(user) && users.isEmpty()) { manager?.removeUpdates(this); manager?.unregisterGnssStatusCallback(gnss) }
     }
 
     /** After the permission is granted while the screen is open. */
@@ -41,9 +49,12 @@ class LocationWatcher(context: Context) : LocationListener {
             app.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) return
         try {
             lastKnown()?.let(::onLocationChanged)
+            // The GPS first: it needs no internet. The network position (Wi‑Fi, mobile) only helps when there is one.
             m.getProviders(true).filter { it in PROVIDERS }.filter { it != LocationManager.PASSIVE_PROVIDER }.forEach {
-                m.requestLocationUpdates(it, 5_000L, 2f, this, Looper.getMainLooper())
+                m.requestLocationUpdates(it, if (it == LocationManager.GPS_PROVIDER) 2_000L else 5_000L, 1f, this, Looper.getMainLooper())
             }
+            if (app.checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+                m.registerGnssStatusCallback(gnss, android.os.Handler(Looper.getMainLooper()))
         } catch (_: SecurityException) { } catch (_: IllegalArgumentException) { }
     }
 
@@ -62,11 +73,15 @@ class LocationWatcher(context: Context) : LocationListener {
         val old = latest
         // A late answer from another provider never replaces a newer position.
         if (old != null && fix.time < old.time) return
+        // A rough network position never replaces a recent, better GPS one.
+        if (old != null && old.provider == LocationManager.GPS_PROVIDER && fix.provider != LocationManager.GPS_PROVIDER &&
+            fix.time - old.time < 30_000 && (fix.accuracyM ?: Float.MAX_VALUE) > (old.accuracyM ?: Float.MAX_VALUE)) return
         latest = fix
         onFix(fix)
     }
 
-    fun Location.toFix() = Fix(latitude, longitude, if (hasAccuracy()) accuracy else null, time)
+    fun Location.toFix() = Fix(latitude, longitude, if (hasAccuracy()) accuracy else null, time,
+        if (hasAltitude()) altitude else null, provider)
 
     private fun granted(permission: String) = app.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
 

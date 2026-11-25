@@ -68,6 +68,32 @@ class ScreenshotsTest {
         compose.onNodeWithText("Oestenoroeste").assertExists()
     }
 
+    /** Offline position, true north, «Ir a» a saved place, the sun on the dial, and calibration with its progress. */
+    @Test fun locationPlacesAndCalibration() {
+        prefs.edit().clear().commit()
+        val noon = java.time.ZonedDateTime.parse("2026-11-21T19:30:00Z").toInstant().toEpochMilli()        // 14:30 in Cuenca
+        val state = CompassState(prefs, model = { com.zirakusa.brujula.ui.Magnetic(-3.2f, 28f) }, clock = { noon }).apply {
+            onHeading(Heading(300f, Accuracy.HIGH)); locationAllowed = true
+            onFix(Fix(-2.9001, -79.0059, 4f, noon - 3_000, 2560.0, "gps")); onSatellites(11, 27)
+            addPlace("Coche", com.zirakusa.brujula.data.LatLon(-2.8950, -79.0102)); addPlace("Campamento", com.zirakusa.brujula.data.LatLon(-2.95, -79.2))
+            goTo(0)
+        }
+        compose.setContent { BrujulaTheme(state.themeMode, state.amoled, state.accent) { BrujulaApp(state, com.zirakusa.brujula.ui.AppActions(now = { noon })) } }
+        compose.onNodeWithText("Norte verdadero · declinación 3,2° O").assertExists()
+        compose.onNodeWithText("Ir a Coche", substring = true).assertExists()
+        compose.waitForIdle(); onView(isRoot()).captureRoboImage("build/screenshots/brujula-goto.png")
+        state.page = Page.LOCATION
+        compose.onNodeWithText("-2.90010, -79.00590").assertExists()
+        compose.onNodeWithText("11 en uso de 27").assertExists()
+        compose.onNodeWithText("Parar").assertExists()
+        compose.waitForIdle(); onView(isRoot()).captureRoboImage("build/screenshots/brujula-location.png")
+        state.openCalibration()
+        state.onField(30f, 0f, 0f); state.onField(0f, 28f, 0f); state.onField(0f, 0f, 29f); state.onField(20f, 20f, 0f)
+        state.onField(90f, 0f, 0f)                                                         // a magnet nearby
+        compose.onNodeWithText("Movimiento", substring = true).assertExists()
+        compose.waitForIdle(); onView(isRoot()).captureRoboImage("build/screenshots/brujula-calibration-progress.png")
+    }
+
     @Test fun askLocationPolitely() {
         val state = CompassState(prefs).apply { onHeading(Heading(3f, Accuracy.HIGH)) }
         var asked = 0

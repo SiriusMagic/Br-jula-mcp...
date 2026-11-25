@@ -23,9 +23,10 @@ import com.zirakusa.brujula.ui.theme.CompassColors
 /**
  * The dial, like the phone's compass: a mark every 2°, a longer one every 30° with its number outside, the letters
  * N (with a small triangle in the accent) E S O inside, all turning with the heading so north stays north. The accent line
- * at the top stays still: it is where the phone points.
+ * at the top stays still: it is where the phone points. Optional: the sun (yellow) and the place of «Ir a» (green arrow),
+ * as directions in the same frame as [heading].
  */
-@Composable fun Dial(heading: Float, letters: List<String>, modifier: Modifier = Modifier) {
+@Composable fun Dial(heading: Float, letters: List<String>, modifier: Modifier = Modifier, target: Float? = null, sun: Float? = null) {
     val measurer = rememberTextMeasurer()
     val text = CompassColors.Text
     val tick = CompassColors.Tick
@@ -52,10 +53,22 @@ import com.zirakusa.brujula.ui.theme.CompassColors
             val tip = c.y - r * 0.715f
             val half = 7.dp.toPx()
             drawPath(Path().apply { moveTo(c.x, tip); lineTo(c.x - half, tip + half * 1.5f); lineTo(c.x + half, tip + half * 1.5f); close() }, accent)
+            // The sun, where it is now: north without trusting the magnetometer.
+            sun?.let { rotate(it, c) { drawCircle(SUN, 9.dp.toPx(), Offset(c.x, c.y - r * 0.64f)); drawCircle(SUN.copy(alpha = .3f), 15.dp.toPx(), Offset(c.x, c.y - r * 0.64f)) } }
+            // «Ir a»: a big arrow towards the chosen place.
+            target?.let {
+                rotate(it, c) {
+                    val t = c.y - r * 0.70f; val w = 13.dp.toPx()
+                    drawPath(Path().apply { moveTo(c.x, t - w * 0.6f); lineTo(c.x - w, t + w * 1.4f); lineTo(c.x, t + w * 0.8f); lineTo(c.x + w, t + w * 1.4f); close() }, GOAL)
+                }
+            }
         }
         drawLine(accent, Offset(c.x, c.y - r * 0.995f), Offset(c.x, c.y - r * 0.70f), strokeWidth = 3.dp.toPx(), cap = StrokeCap.Round)
     }
 }
+
+private val SUN = Color(0xFFFFC53D)
+private val GOAL = Color(0xFF34C759)
 
 /** Text centred on the vertical through the dial's centre, its middle at [y] (the canvas is turned around it first). */
 private fun DrawScope.centred(layout: TextLayoutResult, color: Color, y: Float) =

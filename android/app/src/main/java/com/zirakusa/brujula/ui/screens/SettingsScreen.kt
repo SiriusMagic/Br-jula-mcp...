@@ -90,7 +90,7 @@ import com.zirakusa.brujula.ui.theme.ThemeMode
             HorizontalDivider(color = CompassColors.Chip)
             Item(stringResource(R.string.calibrate), stringResource(R.string.calibrate_hint), onCalibrate)
         }
-        IconCard(CompassColors.Card, CompassColors.Text, CompassColors.Muted, CompassColors.Accent, androidx.compose.ui.graphics.Color(0xFF000000))
+        IconCard(CompassColors.Card, CompassColors.Text, CompassColors.Muted, CompassColors.Accent)
         Group {
             Item(stringResource(R.string.privacy), null) { privacy = true }
             HorizontalDivider(color = CompassColors.Chip)

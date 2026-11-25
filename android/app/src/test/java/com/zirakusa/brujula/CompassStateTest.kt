@@ -58,4 +58,53 @@ class CompassStateTest {
         assertEquals(ThemeMode.LIGHT, again.themeMode); assertEquals(Accent.AZUL, again.accent)
         assertFalse(again.amoled); assertEquals(16, again.points)
     }
+
+    private fun fresh(model: (com.zirakusa.brujula.data.Fix) -> com.zirakusa.brujula.ui.Magnetic? = { com.zirakusa.brujula.ui.Magnetic(-3f, 28f) }): CompassState {
+        prefs.edit().clear().commit()
+        return CompassState(prefs, model, clock = { java.time.ZonedDateTime.parse("2026-03-20T12:00:00Z").toInstant().toEpochMilli() })
+    }
+
+    @Test fun trueNorthNeedsOnlyThePosition() {
+        val s = fresh()
+        s.onHeading(Heading(10f, Accuracy.HIGH))
+        assertEquals(10f, s.shownHeading, 1e-4f); assertFalse(s.usingTrueNorth)          // no position yet: magnetic
+        s.onFix(com.zirakusa.brujula.data.Fix(-0.18, -78.47, 5f, 1, 2800.0, "gps"))
+        assertTrue(s.usingTrueNorth); assertEquals(7f, s.shownHeading, 1e-4f)            // 10° − 3° of declination
+        s.changeTrueNorth(false)
+        assertEquals(10f, s.shownHeading, 1e-4f)
+        assertFalse(CompassState(prefs).trueNorth)                                         // remembered
+        s.onSatellites(9, 24); assertEquals(9 to 24, s.satellites)
+    }
+
+    @Test fun placesAndGoTo() {
+        val s = fresh()
+        assertFalse(s.saveHere("Coche"))                                                   // no position yet
+        s.onFix(com.zirakusa.brujula.data.Fix(-0.18, -78.47, 5f, 1, null, "gps"))
+        assertTrue(s.saveHere("Coche"))
+        assertTrue(s.addPlace("", com.zirakusa.brujula.data.LatLon(-0.17, -78.47)))        // ~1.1 km north
+        assertEquals(listOf("Coche", "Lugar 2"), s.places.map { it.name })
+        s.goTo(1)
+        val (metres, dir) = s.toTarget!!
+        assertEquals(1112.0, metres, 20.0)
+        assertEquals(0f, dir, 0.5f)                                                        // due north (true north is in use)
+        assertEquals("Lugar 2", CompassState(prefs).targetPlace?.name)                     // remembered
+        s.goTo(1); assertEquals(null, s.target)                                            // again: stop
+        s.goTo(1); s.removePlace(0); assertEquals(0, s.target)                              // the index follows
+        s.removePlace(0); assertEquals(null, s.target); assertTrue(s.places.isEmpty())
+        assertTrue(s.sun != null)                                                           // 07:00 in Quito: the sun is up
+    }
+
+    @Test fun calibrationProgressAndInterference() {
+        val s = fresh()
+        s.openCalibration()
+        assertTrue(s.seen.isEmpty())
+        s.onField(40f, 0f, 0f); s.onField(0f, 40f, 0f); s.onField(0f, 0f, -40f)
+        assertEquals(3, s.seen.size); assertEquals(40f, s.field, 1e-3f)
+        s.onFix(com.zirakusa.brujula.data.Fix(-0.18, -78.47))
+        assertEquals(com.zirakusa.brujula.data.Calibration.Field.STRONG, s.fieldStatus)    // 40 µT where 28 is expected
+        s.onAccuracy(Accuracy.HIGH)
+        assertEquals(Page.CALIBRATION, s.page)                                              // stays open: a magnet nearby
+        s.onField(28f, 0f, 0f)
+        assertTrue(s.calibrated)
+    }
 }

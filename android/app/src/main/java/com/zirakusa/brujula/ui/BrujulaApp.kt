@@ -7,12 +7,14 @@ import com.zirakusa.brujula.ui.screens.McpScreen
 import com.zirakusa.brujula.ui.screens.SettingsScreen
 
 /** What the screens ask the phone for (the activity gives the real ones; tests leave them empty). */
-class AppActions(val askLocation: () -> Unit = {}, val copy: (String) -> Unit = {}, val goToHub: () -> Unit = {})
+class AppActions(val askLocation: () -> Unit = {}, val copy: (String) -> Unit = {}, val goToHub: () -> Unit = {},
+    val copyText: (String) -> Unit = {}, val now: () -> Long = System::currentTimeMillis)
 
-/** One page at a time: the compass, «Calibrar la Brújula», Ajustes or Modo MCP. */
+/** One page at a time: the compass, «Ubicación», «Calibrar la Brújula», Ajustes or Modo MCP. */
 @Composable fun BrujulaApp(state: CompassState, actions: AppActions = AppActions()) = when (state.page) {
     Page.COMPASS -> CompassScreen(state, actions.askLocation) { state.page = Page.SETTINGS }
-    Page.CALIBRATION -> CalibrationScreen(state::closeCalibration)
+    Page.LOCATION -> com.zirakusa.brujula.ui.screens.LocationScreen(state, actions.askLocation, actions.copyText, actions.now) { state.page = Page.COMPASS }
+    Page.CALIBRATION -> CalibrationScreen(state, state::closeCalibration)
     Page.SETTINGS -> SettingsScreen(state, onMcp = { state.page = Page.MCP }, onCalibrate = { state.openCalibration(Page.SETTINGS) }) {
         state.page = Page.COMPASS
     }
