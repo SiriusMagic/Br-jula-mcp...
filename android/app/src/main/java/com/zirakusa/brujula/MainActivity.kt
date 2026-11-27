@@ -17,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.SideEffect
 import androidx.core.view.WindowCompat
 import com.zirakusa.brujula.mcp.McpMode
+import com.zirakusa.brujula.mcp.showMcpOptions
 import com.zirakusa.brujula.ui.AppActions
 import com.zirakusa.brujula.ui.BrujulaApp
 import com.zirakusa.brujula.ui.CompassState
@@ -94,9 +95,5 @@ class MainActivity : ComponentActivity() {
         Toast.makeText(this, R.string.copied, Toast.LENGTH_SHORT).show()
     }
 
-    /** «Modo MCP» in Ajustes: it is turned on, allowed on the phone and given tokens in Arka, so this opens Arka. */
-    private fun openArka() {
-        val open = packageManager.getLaunchIntentForPackage("com.zirakusa.gatewayhub")
-        if (open != null) startActivity(open) else Toast.makeText(this, R.string.mcp_no_arka, Toast.LENGTH_LONG).show()
-    }
+    private fun openArka() = showMcpOptions(this)
 }

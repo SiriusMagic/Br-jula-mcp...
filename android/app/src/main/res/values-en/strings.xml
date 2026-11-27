@@ -63,7 +63,7 @@
     <string name="version">Version %1$s</string>
 
     <string name="mcp_title">MCP mode</string>
-    <string name="mcp_settings_hint">Controlled from Arka: turning it on, allowing it locally and creating tokens.</string>
+    <string name="mcp_settings_hint">Set up local access and redirection to Hub.</string>
     <string name="mcp_status_off">Off</string>
     <string name="mcp_online">Connected to the internet</string>
     <string name="mcp_connecting">Connecting…</string>
@@ -134,5 +134,5 @@
     <string name="microtesla">%1$d µT</string>
     <string name="field_strong">Field too strong: move the phone away from magnets, speakers, magnetic cases, metal or the charger.</string>
     <string name="field_weak">Field too weak: the sensor may be off. Try outdoors.</string>
-    <string name="mcp_no_arka">Install Arka to turn MCP mode on.</string>
+    <string name="mcp_no_arka">Install Arka to manage Hub connections.</string>
 </resources>

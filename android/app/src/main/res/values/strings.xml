@@ -67,7 +67,7 @@
 
     <!-- Modo MCP (igual que Stone, Luma, Calculadora y Notas) -->
     <string name="mcp_title">Modo MCP</string>
-    <string name="mcp_settings_hint">Lo controla Arka: activarlo, permitirlo en local y crear tokens.</string>
+    <string name="mcp_settings_hint">Configura el acceso local y la redirección a Hub.</string>
     <string name="mcp_status_off">Apagado</string>
     <string name="mcp_online">Conectado a internet</string>
     <string name="mcp_connecting">Conectando…</string>
@@ -138,5 +138,5 @@
     <string name="microtesla">%1$d µT</string>
     <string name="field_strong">Campo demasiado fuerte: aleja el teléfono de imanes, altavoces, fundas con imán, metal o el cargador.</string>
     <string name="field_weak">Campo demasiado débil: el sensor puede estar mal. Prueba al aire libre.</string>
-    <string name="mcp_no_arka">Instala Arka para activar el Modo MCP.</string>
+    <string name="mcp_no_arka">Instala Arka para administrar los enlaces del Hub.</string>
 </resources>

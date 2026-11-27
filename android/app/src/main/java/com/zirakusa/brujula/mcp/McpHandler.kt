@@ -48,7 +48,7 @@ class McpHandler(private val tokens: () -> List<Token>, private val data: Compas
                     "compass_location gives latitude and longitude (decimal and degrees-minutes-seconds). Everything is read-only. " +
                     "Errors carry a code (structuredContent.error.code): NO_PERMISSION, NO_FIX, NO_SENSOR, NO_READING, BAD_ARGUMENT.")
                 .put("_meta", JSONObject().put(TOKEN_META, JSONObject().put("name", token.name).put("kind", "redirect").put("mode", token.access.key)))
-            "ping" -> JSONObject()
+            "ping" -> McpProbeReceipt.accept(id)
             "tools/list" -> JSONObject().put("tools", JSONArray(CompassTools.tools.map {
                 JSONObject().put("name", it.name).put("description", it.description).put("inputSchema", it.schema)
                     .put("annotations", JSONObject().put("readOnlyHint", true).put("destructiveHint", false))
